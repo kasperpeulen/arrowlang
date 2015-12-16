@@ -1,0 +1,11 @@
+name: arrowfmt
+version: 0.1.0
+author: Emil Persson <emil.n.persson@gmail.com>
+description: Format Arrow code
+
+dependencies:
+  arrow_ast: ^0.1.0
+
+dependency_overrides:
+  arrow_ast:
+    path: ../ast

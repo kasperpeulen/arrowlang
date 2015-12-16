@@ -1,0 +1,7 @@
+name: arrow_ast
+author: Emil Persson <emil.n.persson@gmail.com>
+description: The Arrow language Abstract Syntax Tree parser
+
+dev_dependencies:
+  test: any
+  testcase: any

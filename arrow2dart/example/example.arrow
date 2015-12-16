@@ -1,0 +1,16 @@
+main() {
+  // prints "Greetings, friend!"
+  new Greeter('Greetings').greet('friend')
+}
+
+class Greeter {
+  let greeting: String
+
+  Greeter(this.greeting)
+
+  greet(name: String): Null {
+    let message = '$greeting, $name!'
+
+    print(message)
+  }
+}
