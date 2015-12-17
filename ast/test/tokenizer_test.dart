@@ -22,8 +22,134 @@ class TokenizerTest implements TestCase {
     expectTokens('', []);
     expectToken(' ', TokenType.whitespace);
     expectToken('\n', TokenType.lineBreak);
+    expectToken('\n\n', TokenType.lineBreak);
+    expectToken('\n  \n', TokenType.lineBreak);
+    expectToken('\n  \n\n  \n\t \n', TokenType.lineBreak);
+
+    // Keywords
+    expectToken('abstract', TokenType.abstractKeyword);
+    expectToken('continue', TokenType.continueKeyword);
+    expectToken('false', TokenType.falseKeyword);
+    expectToken('new', TokenType.newKeyword);
+    expectToken('this', TokenType.thisKeyword);
+    expectToken('as', TokenType.asKeyword);
+    expectToken('default', TokenType.defaultKeyword);
+    expectToken('let', TokenType.letKeyword);
+    expectToken('null', TokenType.nullKeyword);
+    expectToken('throw', TokenType.throwKeyword);
+    expectToken('assert', TokenType.assertKeyword);
+    expectToken('deferred', TokenType.deferredKeyword);
+    expectToken('finally', TokenType.finallyKeyword);
+    expectToken('operator', TokenType.operatorKeyword);
+    expectToken('true', TokenType.trueKeyword);
+    expectToken('async', TokenType.asyncKeyword);
+    expectToken('do', TokenType.doKeyword);
+    expectToken('for', TokenType.forKeyword);
+    expectToken('part', TokenType.partKeyword);
+    expectToken('part of', TokenType.partOfKeyword);
+    expectToken('try', TokenType.tryKeyword);
+    expectToken('dynamic', TokenType.dynamicKeyword);
+    expectToken('get', TokenType.getKeyword);
+    expectToken('rethrow', TokenType.rethrowKeyword);
+    expectToken('typedef', TokenType.typedefKeyword);
+    expectToken('await', TokenType.awaitKeyword);
+    expectToken('else', TokenType.elseKeyword);
+    expectToken('if', TokenType.ifKeyword);
+    expectToken('return', TokenType.returnKeyword);
+    expectToken('var', TokenType.varKeyword);
+    expectToken('break', TokenType.breakKeyword);
+    expectToken('enum', TokenType.enumKeyword);
+    expectToken('implements', TokenType.implementsKeyword);
+    expectToken('set', TokenType.setKeyword);
+    expectToken('void', TokenType.voidKeyword);
+    expectToken('case', TokenType.caseKeyword);
+    expectToken('export', TokenType.exportKeyword);
+    expectToken('import', TokenType.importKeyword);
+    expectToken('static', TokenType.staticKeyword);
+    expectToken('while', TokenType.whileKeyword);
+    expectToken('catch', TokenType.catchKeyword);
+    expectToken('external', TokenType.externalKeyword);
+    expectToken('in', TokenType.inKeyword);
+    expectToken('super', TokenType.superKeyword);
+    expectToken('with', TokenType.withKeyword);
+    expectToken('class', TokenType.classKeyword);
+    expectToken('extends', TokenType.extendsKeyword);
+    expectToken('is', TokenType.isKeyword);
+    expectToken('switch', TokenType.switchKeyword);
+    expectToken('yield', TokenType.yieldKeyword);
+    expectToken('const', TokenType.constKeyword);
+    expectToken('factory', TokenType.factoryKeyword);
+    expectToken('library', TokenType.libraryKeyword);
+
+  // Symbols
+    expectToken('public', TokenType.identifier);
+    expectToken('_private', TokenType.identifier);
+    expectToken(r'$special', TokenType.identifier);
+    expectToken(r'_$special', TokenType.identifier);
+    expectToken(r'$_special', TokenType.identifier);
+    expectToken(r'$1_special', TokenType.identifier);
+    expectToken(r'_1$special', TokenType.identifier);
+
+    // Comments
     expectToken('//c', TokenType.lineComment);
     expectToken('///c', TokenType.lineComment);
     expectToken('/*c\nc*/', TokenType.multilineComment);
+
+    // Raw strings
+    expectToken('r""', TokenType.rawString);
+    expectToken("r''", TokenType.rawString);
+    expectToken('r"x"', TokenType.rawString);
+    expectToken("r'x'", TokenType.rawString);
+    expectToken('r"""\n"""', TokenType.rawString);
+    expectToken("r'''\n'''", TokenType.rawString);
+
+    // Strings
+    expectToken('""', TokenType.string);
+    expectToken("''", TokenType.string);
+    expectToken('"x"', TokenType.string);
+    expectToken("'x'", TokenType.string);
+    expectToken('"""\n"""', TokenType.string);
+    expectToken("'''\n'''", TokenType.string);
+    expectToken(r"'\$'", TokenType.string);
+  }
+
+  @test
+  string_interpolation() {
+    expectTokens(r"'x$y z'", [
+      const Token(TokenType.string, "'x", 0),
+      const Token(TokenType.openStringInterpolation, r"$", 2),
+      const Token(TokenType.identifier, "y", 3),
+      const Token(TokenType.closeStringInterpolation, "", 4),
+      const Token(TokenType.string, " z'", 4),
+    ]);
+    expectTokens(r"'x${y}z'", [
+      const Token(TokenType.string, "'x", 0),
+      const Token(TokenType.openStringInterpolation, r"${", 2),
+      const Token(TokenType.identifier, "y", 4),
+      const Token(TokenType.closeStringInterpolation, "}", 5),
+      const Token(TokenType.string, "z'", 6),
+    ]);
+    expectTokens(r"'x$y $y z'", [
+      const Token(TokenType.string, "'x", 0),
+      const Token(TokenType.openStringInterpolation, r"$", 2),
+      const Token(TokenType.identifier, "y", 3),
+      const Token(TokenType.closeStringInterpolation, "", 4),
+      const Token(TokenType.string, " ", 4),
+      const Token(TokenType.openStringInterpolation, r"$", 5),
+      const Token(TokenType.identifier, "y", 6),
+      const Token(TokenType.closeStringInterpolation, "", 7),
+      const Token(TokenType.string, " z'", 7),
+    ]);
+    expectTokens(r"'a${b}c${d}e'", [
+      const Token(TokenType.string, "'a", 0),
+      const Token(TokenType.openStringInterpolation, r"${", 2),
+      const Token(TokenType.identifier, "b", 4),
+      const Token(TokenType.closeStringInterpolation, "}", 5),
+      const Token(TokenType.string, "c", 6),
+      const Token(TokenType.openStringInterpolation, r"${", 7),
+      const Token(TokenType.identifier, "d", 9),
+      const Token(TokenType.closeStringInterpolation, "}", 10),
+      const Token(TokenType.string, "e'", 11),
+    ]);
   }
 }
