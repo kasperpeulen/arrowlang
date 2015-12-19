@@ -1,7 +1,7 @@
 part of arrow.ast.ast;
 
 class NodeList<E extends Node> extends IterableBase<E> {
-  final Iterable<E> _source;
+  final List<E> _source;
 
   const NodeList(this._source);
 
@@ -21,5 +21,10 @@ class NodeList<E extends Node> extends IterableBase<E> {
     throw new ParserError(
         '${other.runtimeType} cannot be added to a NodeList<$E>'
     );
+  }
+
+  bool operator ==(other) {
+    return other is NodeList<E>
+        && _equalIterables(this, other);
   }
 }

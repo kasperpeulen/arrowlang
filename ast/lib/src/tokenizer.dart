@@ -10,6 +10,8 @@ class Tokenizer {
     r'^\/\/.*': TokenType.lineComment,
     r'^\/\*[^]*?\*\/': TokenType.multilineComment,
     r'''^r(['"])(?:\1\1[^]*?\1\1|.*?)\1''': TokenType.rawString,
+
+    // Keywords
     r'^abstract\b': TokenType.abstractKeyword,
     r'^continue\b': TokenType.continueKeyword,
     r'^false\b': TokenType.falseKeyword,
@@ -63,6 +65,20 @@ class Tokenizer {
     r'^const\b': TokenType.constKeyword,
     r'^factory\b': TokenType.factoryKeyword,
     r'^library\b': TokenType.libraryKeyword,
+
+    // Punctuation
+    r'^\;': TokenType.semicolon,
+    r'^\.': TokenType.period,
+    r'^\,': TokenType.comma,
+    r'^\(': TokenType.openParenthesis,
+    r'^\)': TokenType.closeParenthesis,
+    r'^\[': TokenType.openBracket,
+    r'^\]': TokenType.closeBracket,
+    r'^\{': TokenType.openCurly,
+    r'^\}': TokenType.closeCurly,
+    r'^\<': TokenType.openAngleBracket,
+    r'^\>': TokenType.closeAngleBracket,
+
     _identifierMatcher: TokenType.identifier,
   };
   static const _stringStartPattern = r'''^['"]''';
@@ -73,7 +89,7 @@ class Tokenizer {
   Iterable<Token> tokenize() sync* {
     final tokens = _tokenizeUntil((offset) => offset == source.length, 0);
     yield* tokens;
-    yield new Token(TokenType.eof, null, _endOffset(tokens));
+    yield _t(TokenType.eof, null, _endOffset(tokens));
   }
 
   Iterable<Token> _tokenizeUntil(bool condition(int offset), int offset) {
@@ -95,12 +111,16 @@ class Tokenizer {
     return __tokenizeUntil(condition, newTokens.last.end, concat);
   }
 
+  Token _t(TokenType type, String content, int offset) {
+    return new Token(type, content, offset, line: currentLine(offset), column: currentColumn(offset));
+  }
+
   _tokenizeStringInterpolationMatcher(int offset, RegExp matcher, [String stringLiteralEnding]) sync* {
     final source = _source(offset);
     final $ = matcher.firstMatch(source);
     final stringAndDollarSign = $[0];
     final string = stringAndDollarSign.substring(0, stringAndDollarSign.length - 1);
-    final token = new Token(
+    final token = _t(
         TokenType.string,
         string,
         offset
@@ -111,7 +131,7 @@ class Tokenizer {
   }
 
   _tokenizeStringMatcher(int offset, RegExp matcher) sync* {
-    yield new Token(
+    yield _t(
         TokenType.string,
         matcher.firstMatch(_source(offset))[0],
         offset
@@ -144,14 +164,14 @@ class Tokenizer {
     final source = _source(offset);
     if (source.startsWith(r'${')) yield* _tokenizeStringInterpolationExpression(offset, stringLiteralEnding);
     else {
-      yield new Token(TokenType.openStringInterpolation, r'$', offset);
+      yield _t(TokenType.openStringInterpolation, r'$', offset);
       final identifier = _source(offset + 1);
       final identifierRegEx = new RegExp(_identifierMatcher);
       if (!identifierRegEx.hasMatch(identifier))
         throw new TokenizerError('Invalid token "${identifier.split(' ').first}" in interpolation at ${_describePoint(offset)}');
-      final identifierToken = new Token(TokenType.identifier, identifierRegEx.firstMatch(identifier)[0], offset + 1);
+      final identifierToken = _t(TokenType.identifier, identifierRegEx.firstMatch(identifier)[0], offset + 1);
       yield identifierToken;
-      yield new Token(TokenType.closeStringInterpolation, '', identifierToken.end);
+      yield _t(TokenType.closeStringInterpolation, '', identifierToken.end);
       yield* _tokenizeStringAfterInterpolation(identifierToken.end, stringLiteralEnding);
     }
   }
@@ -180,11 +200,11 @@ class Tokenizer {
   }
 
   Iterable<Token> _tokenizeStringInterpolationExpression(int offset, String stringLiteralEnding) sync* {
-    final openToken = new Token(TokenType.openStringInterpolation, r'${', offset);
+    final openToken = _t(TokenType.openStringInterpolation, r'${', offset);
     yield openToken;
     final tokens = _tokenizeUntil((offset) => _source(offset).startsWith('}'), openToken.end);
     yield* tokens;
-    final endToken = new Token(TokenType.closeStringInterpolation, '}', _endOffset(tokens, initial: openToken.end));
+    final endToken = _t(TokenType.closeStringInterpolation, '}', _endOffset(tokens, initial: openToken.end));
     yield endToken;
     yield* _tokenizeStringAfterInterpolation(endToken.end, stringLiteralEnding);
   }
@@ -194,7 +214,7 @@ class Tokenizer {
     for (final pattern in matchers.keys) {
       final r = new RegExp(pattern);
       if (r.hasMatch(s)) {
-        return new Token(matchers[pattern], r.firstMatch(s)[0], offset);
+        return _t(matchers[pattern], r.firstMatch(s)[0], offset);
       }
     }
     throw new TokenizerError('Unexpected token "${s[0]}" at ${_describePoint(offset)}');
@@ -203,11 +223,14 @@ class Tokenizer {
   String _source(int offset) => source.substring(offset);
 
   String _describePoint(int offset) {
-    final lines = source.substring(0, offset).split(new RegExp(r'\r?\n'));
-    final line = lines.length;
-    final col = lines.last.length;
-    return '$line:$col';
+    return '$currentLine:$currentColumn';
   }
+
+  Iterable<String> parsedLines(int offset) => source.substring(0, offset).split(new RegExp(r'\r?\n'));
+
+  int currentLine(int offset) => parsedLines(offset).length;
+
+  int currentColumn(int offset) => parsedLines(offset).last.length;
 }
 
 class TokenizerError extends Error {

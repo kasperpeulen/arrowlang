@@ -8,9 +8,18 @@ class TokenizerTest implements TestCase {
   tearDown() {}
 
   void expectTokens(String source, Iterable<Token> expectedTokens) {
-    final tokens = new Tokenizer(source).tokenize();
+    final tokenizer = new Tokenizer(source);
+    final tokens = tokenizer.tokenize();
+    final offset = source.length;
     expect(tokens, expectedTokens.toList()
-      ..add(new Token(TokenType.eof, null, source.length)));
+      ..add(new Token(
+          TokenType.eof,
+          null,
+          offset,
+          line: tokenizer.currentLine(offset),
+          column: tokenizer.currentColumn(offset))
+      )
+    );
   }
 
   void expectToken(String source, TokenType type) {
@@ -111,6 +120,29 @@ class TokenizerTest implements TestCase {
     expectToken('"""\n"""', TokenType.string);
     expectToken("'''\n'''", TokenType.string);
     expectToken(r"'\$'", TokenType.string);
+
+    // Punctuation
+    expectToken(';', TokenType.semicolon);
+    expectToken('.', TokenType.period);
+    expectToken(',', TokenType.comma);
+    expectToken('(', TokenType.openParenthesis);
+    expectToken(')', TokenType.closeParenthesis);
+    expectToken('[', TokenType.openBracket);
+    expectToken(']', TokenType.closeBracket);
+    expectToken('{', TokenType.openCurly);
+    expectToken('}', TokenType.closeCurly);
+    expectToken('<', TokenType.openAngleBracket);
+    expectToken('>', TokenType.closeAngleBracket);
+  }
+
+  @test
+  line_and_column() {
+    expectTokens('x\n y', [
+      const Token(TokenType.identifier, 'x', 0),
+      const Token(TokenType.lineBreak, '\n', 1),
+      const Token(TokenType.whitespace, ' ', 2, line: 2, column: 0),
+      const Token(TokenType.identifier, 'y', 3, line: 2, column: 1),
+    ]);
   }
 
   @test

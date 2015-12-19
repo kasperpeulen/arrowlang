@@ -2,10 +2,23 @@ part of arrow.ast.ast;
 
 class ScriptHead extends Node implements TopLevelNode {
   const ScriptHead(NodeList<Node> children) : super(children);
+  const ScriptHead.empty() : super.empty();
 
+  /// [ScriptHead] ::=
+  ///   (
+  ///     [LibraryDeclaration]
+  ///     |
+  ///     [PartOfDeclaration]
+  ///   )?
+  ///   (
+  ///     [ImportDeclaration]
+  ///     |
+  ///     [ExportDeclaration]
+  ///   )*
+  ///   [PartDeclaration]*
   factory ScriptHead.parse(Parser parser) {
     return new ScriptHead(new NodeList<Node>(
-        _parseScriptHead(parser)
+        new List.unmodifiable(_parseScriptHead(parser))
     ));
   }
 
@@ -17,6 +30,10 @@ class ScriptHead extends Node implements TopLevelNode {
       case TokenType.partOfKeyword:
         yield new PartOfDeclaration.parse(parser);
         break;
+      default:
+        break;
+    }
+    switch (parser.next.type) {
       case TokenType.partKeyword:
       case TokenType.importKeyword:
       case TokenType.exportKeyword:
