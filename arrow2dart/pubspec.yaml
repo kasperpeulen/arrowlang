@@ -10,6 +10,10 @@ dependencies:
   args: ^0.13.2
   dart_style: ^0.2.2
 
+dev_dependencies:
+  test: any
+  testcase: any
+
 executables:
   - arrow2dart
 
