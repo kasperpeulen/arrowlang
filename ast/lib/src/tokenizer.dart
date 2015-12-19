@@ -27,7 +27,6 @@ class Tokenizer {
     r'^finally\b': TokenType.finallyKeyword,
     r'^operator\b': TokenType.operatorKeyword,
     r'^true\b': TokenType.trueKeyword,
-    r'^async\b': TokenType.asyncKeyword,
     r'^do\b': TokenType.doKeyword,
     r'^for\b': TokenType.forKeyword,
     r'^part of\b': TokenType.partOfKeyword,
@@ -66,8 +65,14 @@ class Tokenizer {
     r'^factory\b': TokenType.factoryKeyword,
     r'^library\b': TokenType.libraryKeyword,
 
+    r'^sync\*': TokenType.syncStarKeyword,
+    r'^async\*': TokenType.asyncStarKeyword,
+    r'^sync\b': TokenType.syncKeyword,
+    r'^async\b': TokenType.asyncKeyword,
+
     // Punctuation
     r'^\;': TokenType.semicolon,
+    r'^\:': TokenType.colon,
     r'^\.': TokenType.period,
     r'^\,': TokenType.comma,
     r'^\(': TokenType.openParenthesis,
@@ -78,6 +83,7 @@ class Tokenizer {
     r'^\}': TokenType.closeCurly,
     r'^\<': TokenType.openAngleBracket,
     r'^\>': TokenType.closeAngleBracket,
+    r'^\*': TokenType.star,
 
     _identifierMatcher: TokenType.identifier,
   };

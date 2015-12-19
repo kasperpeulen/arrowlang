@@ -78,9 +78,9 @@ class ImportDeclaration extends Node {
 
   String toString() {
     final asPart = as == null ? '' : ' as ${as.name}';
-    final showPart = show.isEmpty ? '' : ' show ${show.map((t) => t.name).join(', ')}';
-    final hidePart = hide.isEmpty ? '' : ' hide ${hide.map((t) => t.name).join(', ')}';
-    return 'ImportDeclaration: import ${name.name}$asPart$showPart$hidePart ($start -> $end)';
+    final showPart = show.isEmpty ? '' : ' show ${show.map((t) => '$t').join(', ')}';
+    final hidePart = hide.isEmpty ? '' : ' hide ${hide.map((t) => '$t').join(', ')}';
+    return '$runtimeType: import ${name.name}$asPart$showPart$hidePart ($start -> $end)';
   }
 
   bool operator ==(other) {
@@ -154,9 +154,9 @@ class ExportDeclaration extends Node {
   }
 
   String toString() {
-    final showPart = show.isEmpty ? '' : ' show ${show.map((t) => t.name).join(', ')}';
-    final hidePart = hide.isEmpty ? '' : ' hide ${hide.map((t) => t.name).join(', ')}';
-    return 'ExportDeclaration: export ${name.name}$showPart$hidePart ($start -> $end)';
+    final showPart = show.isEmpty ? '' : ' show ${show.map((t) => '$t').join(', ')}';
+    final hidePart = hide.isEmpty ? '' : ' hide ${hide.map((t) => '$t').join(', ')}';
+    return '$runtimeType: export ${name.name}$showPart$hidePart ($start -> $end)';
   }
 }
 
@@ -199,8 +199,7 @@ class _ShowHideList {
 
   static Iterable<TypeName> _parseTypeList(Parser parser) sync* {
     while (true) {
-      final token = parser.expect(TokenType.identifier).move();
-      yield new TypeName(token.content);
+      yield new TypeName.parse(parser);
       if (parser.next.isnt(TokenType.comma)) break;
       parser.move(); // ,
     }

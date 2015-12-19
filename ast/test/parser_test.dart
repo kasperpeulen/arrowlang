@@ -54,47 +54,47 @@ export e show A hide B
             const Token(TokenType.importKeyword, 'import', 34, line: 5, column: 0),
             const Token(TokenType.lineBreak, '\n', 49, line: 5, column: 15),
             const Identifier('c'),
-            show: const [const TypeName('A')]
+            show: const [const TypeName(const Identifier('A'))]
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 50, line: 6, column: 0),
             const Token(TokenType.lineBreak, '\n', 65, line: 6, column: 15),
             const Identifier('d'),
-            hide: const [const TypeName('B')]
+            hide: const [const TypeName(const Identifier('B'))]
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 66, line: 7, column: 0),
             const Token(TokenType.lineBreak, '\n', 88, line: 7, column: 22),
             const Identifier('e'),
-            show: const [const TypeName('A')],
-            hide: const [const TypeName('B')]
+            show: const [const TypeName(const Identifier('A'))],
+            hide: const [const TypeName(const Identifier('B'))]
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 89, line: 8, column: 0),
             const Token(TokenType.lineBreak, '\n', 119, line: 8, column: 30),
             const Identifier('f'),
             as: const Identifier('f'),
-            show: const [const TypeName('A')],
-            hide: const [const TypeName('B'), const TypeName('A')]
+            show: const [const TypeName(const Identifier('A'))],
+            hide: const [const TypeName(const Identifier('B')), const TypeName(const Identifier('A'))]
         ),
         const ExportDeclaration(
             const Token(TokenType.exportKeyword, 'export', 120, line: 9, column: 0),
             const Token(TokenType.lineBreak, '\n', 135, line: 9, column: 15),
             const Identifier('c'),
-            show: const [const TypeName('A')]
+            show: const [const TypeName(const Identifier('A'))]
         ),
         const ExportDeclaration(
             const Token(TokenType.exportKeyword, 'export', 136, line: 10, column: 0),
             const Token(TokenType.lineBreak, '\n', 151, line: 10, column: 15),
             const Identifier('d'),
-            hide: const [const TypeName('B')]
+            hide: const [const TypeName(const Identifier('B'))]
         ),
         const ExportDeclaration(
             const Token(TokenType.exportKeyword, 'export', 152, line: 11, column: 0),
             const Token(TokenType.eof, null, 174, line: 11, column: 22),
             const Identifier('e'),
-            show: const [const TypeName('A')],
-            hide: const [const TypeName('B')]
+            show: const [const TypeName(const Identifier('A'))],
+            hide: const [const TypeName(const Identifier('B'))]
         ),
       ]))
     ])));
@@ -162,23 +162,23 @@ export e show A hide B
           const TopLevelFunction(
               $t, $t,
               const Identifier('x'),
-              const TypeName('X'),
+              const TypeName(const Identifier('X')),
               const <Argument>[
                 const Argument(
                     const Identifier('a'),
-                    const TypeName('A')
+                    const TypeName(const Identifier('A'))
                 ),
                 const Argument(
                     const Identifier('b'),
-                    const TypeName('B')
+                    const TypeName(const Identifier('B'))
                 ),
                 const OptionalArgument(
                     const Identifier('c'),
-                    const TypeName('C')
+                    const TypeName(const Identifier('C'))
                 ),
                 const OptionalArgument(
                     const Identifier('d'),
-                    const TypeName('D')
+                    const TypeName(const Identifier('D'))
                 ),
               ],
               const NodeList<BlockLevelNode>.empty()
@@ -186,25 +186,64 @@ export e show A hide B
           const TopLevelFunction(
               $t, $t,
               const Identifier('y'),
-              const TypeName('Y'),
+              const TypeName(const Identifier('Y')),
               const <Argument>[
                 const Argument(
                     const Identifier('a'),
-                    const TypeName('A')
+                    const TypeName(const Identifier('A'))
                 ),
                 const Argument(
                     const Identifier('b'),
-                    const TypeName('B')
+                    const TypeName(const Identifier('B'))
                 ),
                 const NamedArgument(
                     const Identifier('c'),
-                    const TypeName('C')
+                    const TypeName(const Identifier('C'))
                 ),
                 const NamedArgument(
                     const Identifier('d'),
-                    const TypeName('D')
+                    const TypeName(const Identifier('D'))
                 ),
               ],
+              const NodeList<BlockLevelNode>.empty()
+          ),
+        ]))
+    );
+    expectParsesTo(
+        '''
+          x(): sync X {}
+          x(): sync* X {}
+          x(): async X {}
+          x(): async* X {}
+        ''',
+        const ArrowAst(const NodeList<TopLevelNode>(const <TopLevelNode>[
+          const ScriptHead.empty(),
+          const TopLevelFunction(
+              $t, $t,
+              const Identifier('x'),
+              const TypeName(const Identifier('X')),
+              const <Argument>[],
+              const NodeList<BlockLevelNode>.empty()
+          ),
+          const TopLevelFunction(
+              $t, $t,
+              const Identifier('x'),
+              const TypeName(const Identifier('X'), multi: true),
+              const <Argument>[],
+              const NodeList<BlockLevelNode>.empty()
+          ),
+          const TopLevelFunction(
+              $t, $t,
+              const Identifier('x'),
+              const TypeName(const Identifier('X'), async: true),
+              const <Argument>[],
+              const NodeList<BlockLevelNode>.empty()
+          ),
+          const TopLevelFunction(
+              $t, $t,
+              const Identifier('x'),
+              const TypeName(const Identifier('X'), async: true, multi: true),
+              const <Argument>[],
               const NodeList<BlockLevelNode>.empty()
           ),
         ]))

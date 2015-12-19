@@ -14,7 +14,7 @@ final dart_style.DartFormatter _formatter = new dart_style.DartFormatter();
 String arrow2dart(String source) {
   final arrowAst = arrow.parse(source);
   final dartAst = _arrow2dart(arrowAst);
-  return '$dartAst';
+  return _formatter.format('$dartAst');
 }
 
 String dart2arrow(String source) {

@@ -51,7 +51,6 @@ class TokenizerTest implements TestCase {
     expectToken('finally', TokenType.finallyKeyword);
     expectToken('operator', TokenType.operatorKeyword);
     expectToken('true', TokenType.trueKeyword);
-    expectToken('async', TokenType.asyncKeyword);
     expectToken('do', TokenType.doKeyword);
     expectToken('for', TokenType.forKeyword);
     expectToken('part', TokenType.partKeyword);
@@ -90,7 +89,13 @@ class TokenizerTest implements TestCase {
     expectToken('factory', TokenType.factoryKeyword);
     expectToken('library', TokenType.libraryKeyword);
 
-  // Symbols
+    // Modifier keywords
+    expectToken('sync', TokenType.syncKeyword);
+    expectToken('async', TokenType.asyncKeyword);
+    expectToken('sync*', TokenType.syncStarKeyword);
+    expectToken('async*', TokenType.asyncStarKeyword);
+
+    // Symbols
     expectToken('public', TokenType.identifier);
     expectToken('_private', TokenType.identifier);
     expectToken(r'$special', TokenType.identifier);
@@ -123,6 +128,7 @@ class TokenizerTest implements TestCase {
 
     // Punctuation
     expectToken(';', TokenType.semicolon);
+    expectToken(':', TokenType.colon);
     expectToken('.', TokenType.period);
     expectToken(',', TokenType.comma);
     expectToken('(', TokenType.openParenthesis);
@@ -133,6 +139,7 @@ class TokenizerTest implements TestCase {
     expectToken('}', TokenType.closeCurly);
     expectToken('<', TokenType.openAngleBracket);
     expectToken('>', TokenType.closeAngleBracket);
+    expectToken('*', TokenType.star);
   }
 
   @test

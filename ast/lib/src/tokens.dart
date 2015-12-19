@@ -32,7 +32,6 @@ enum TokenType {
   finallyKeyword,
   operatorKeyword,
   trueKeyword,
-  asyncKeyword,
   doKeyword,
   forKeyword,
   partKeyword,
@@ -71,8 +70,14 @@ enum TokenType {
   factoryKeyword,
   libraryKeyword,
 
+  syncKeyword,
+  asyncKeyword,
+  syncStarKeyword,
+  asyncStarKeyword,
+
   // Punctuation
   semicolon,
+  colon,
   period,
   comma,
   openParenthesis,
@@ -83,6 +88,7 @@ enum TokenType {
   closeCurly,
   openAngleBracket,
   closeAngleBracket,
+  star,
 }
 
 class Token {

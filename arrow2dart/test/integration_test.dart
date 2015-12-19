@@ -14,5 +14,14 @@ class IntegrationTest extends TestCase {
   @test
   script_head() {
     expectArrow2Dart('library x', "library x;");
+    expectArrow2Dart('x() {}', "x() {}");
+    expectArrow2Dart('x(): Null {}', "void x() {}");
+    expectArrow2Dart('x(): X {}', "X x() {}");
+    expectArrow2Dart('x(): sync X {}', "X x() {}");
+    expectArrow2Dart('x(): sync* X {}', "Iterable<X> x() sync* {}");
+    expectArrow2Dart('x(): async X {}', "Future<X> x() async {}");
+    expectArrow2Dart('x(): async* X {}', "Stream<X> x() async* {}");
+    expectArrow2Dart('x(): sync Future<X> {}', "Future<X> x() {}");
+    expectArrow2Dart('x(): Future<X> {}', "Future<X> x() {}");
   }
 }

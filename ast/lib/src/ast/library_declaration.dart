@@ -30,7 +30,7 @@ class LibraryDeclaration extends Node {
     );
   }
 
-  String toString() => 'LibraryDeclaration: library ${name.name} ($start -> $end)';
+  String toString() => '$runtimeType: library ${name.name} ($start -> $end)';
 
   bool operator ==(other) {
     return other is LibraryDeclaration

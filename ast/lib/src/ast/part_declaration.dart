@@ -39,5 +39,5 @@ class PartDeclaration extends Node {
         && super == other;
   }
 
-  String toString() => 'PartDeclaration: part ${name.name}';
+  String toString() => '$runtimeType: part ${name.name}';
 }

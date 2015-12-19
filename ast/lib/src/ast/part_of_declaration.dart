@@ -39,5 +39,5 @@ class PartOfDeclaration extends Node {
         && super == other;
   }
 
-  String toString() => 'PartOfDeclaration: part of ${name.name}';
+  String toString() => '$runtimeType: part of ${name.name}';
 }
