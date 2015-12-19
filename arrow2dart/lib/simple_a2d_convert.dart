@@ -18,7 +18,16 @@ String _convertImportExport(String keyword, node, [Identifier as]) {
   final asPart = as == null ? '' : ' as ${as.name}';
   final showPart = node.show.isEmpty ? '' : ' show ${node.show.map(_convertTypeName).join(', ')}';
   final hidePart = node.hide.isEmpty ? '' : ' hide ${node.hide.map(_convertTypeName).join(', ')}';
-  return "$keyword '${node.name.name}.dart'$asPart$showPart$hidePart;";
+  return "$keyword ${_convertImportExportUri(node.name, node.uri)}$asPart$showPart$hidePart;";
+}
+
+String _convertImportExportUri(NamespaceQualifiedIdentifier name, String uri) {
+  if (name == null) return uri;
+  final namespace = name.namespace?.name;
+  final parts = name.identifier.parts.map((i) => i.name);
+  if (namespace == 'dart')
+    return "'dart:${parts.first}'";
+  throw new UnimplementedError('TODO: Import/Export declaration with name [${name.name}]');
 }
 
 String _convertArgument(Argument argument) {

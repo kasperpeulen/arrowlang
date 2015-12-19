@@ -43,6 +43,11 @@ class Parser {
     _cursor++;
     return current;
   }
+
+  Token moveBack() {
+    _cursor--;
+    return current;
+  }
 }
 
 class ParserError extends Error {

@@ -37,42 +37,42 @@ export e show A hide B
         const LibraryDeclaration(
             const Token(TokenType.libraryKeyword, 'library', 0),
             const Token(TokenType.lineBreak, '\n\n', 9),
-            const Identifier('x')
+            const QualifiedIdentifier(const [const Identifier('x')])
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 11, line: 3, column: 0),
             const Token(TokenType.lineBreak, '\n', 19, line: 3, column: 8),
-            const Identifier('a')
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('a')]))
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 20, line: 4, column: 0),
             const Token(TokenType.lineBreak, '\n', 33, line: 4, column: 13),
-            const Identifier('b'),
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('b')])),
             as: const Identifier('b')
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 34, line: 5, column: 0),
             const Token(TokenType.lineBreak, '\n', 49, line: 5, column: 15),
-            const Identifier('c'),
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('c')])),
             show: const [const TypeName(const Identifier('A'))]
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 50, line: 6, column: 0),
             const Token(TokenType.lineBreak, '\n', 65, line: 6, column: 15),
-            const Identifier('d'),
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('d')])),
             hide: const [const TypeName(const Identifier('B'))]
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 66, line: 7, column: 0),
             const Token(TokenType.lineBreak, '\n', 88, line: 7, column: 22),
-            const Identifier('e'),
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('e')])),
             show: const [const TypeName(const Identifier('A'))],
             hide: const [const TypeName(const Identifier('B'))]
         ),
         const ImportDeclaration(
             const Token(TokenType.importKeyword, 'import', 89, line: 8, column: 0),
             const Token(TokenType.lineBreak, '\n', 119, line: 8, column: 30),
-            const Identifier('f'),
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('f')])),
             as: const Identifier('f'),
             show: const [const TypeName(const Identifier('A'))],
             hide: const [const TypeName(const Identifier('B')), const TypeName(const Identifier('A'))]
@@ -80,34 +80,56 @@ export e show A hide B
         const ExportDeclaration(
             const Token(TokenType.exportKeyword, 'export', 120, line: 9, column: 0),
             const Token(TokenType.lineBreak, '\n', 135, line: 9, column: 15),
-            const Identifier('c'),
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('c')])),
             show: const [const TypeName(const Identifier('A'))]
         ),
         const ExportDeclaration(
             const Token(TokenType.exportKeyword, 'export', 136, line: 10, column: 0),
             const Token(TokenType.lineBreak, '\n', 151, line: 10, column: 15),
-            const Identifier('d'),
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('d')])),
             hide: const [const TypeName(const Identifier('B'))]
         ),
         const ExportDeclaration(
             const Token(TokenType.exportKeyword, 'export', 152, line: 11, column: 0),
             const Token(TokenType.eof, null, 174, line: 11, column: 22),
-            const Identifier('e'),
+            name: const NamespaceQualifiedIdentifier(null, const QualifiedIdentifier(const [const Identifier('e')])),
             show: const [const TypeName(const Identifier('A'))],
             hide: const [const TypeName(const Identifier('B'))]
         ),
       ]))
     ])));
+
+    expectParsesTo('import a:b.c.d',
+        const ArrowAst(const NodeList(const [
+          const ScriptHead(const NodeList(const [
+            const ImportDeclaration($t, $t, name: const NamespaceQualifiedIdentifier(
+                const Identifier('a'),
+                const QualifiedIdentifier(const [
+                  const Identifier('b'),
+                  const Identifier('c'),
+                  const Identifier('d'),
+                ])
+            ))
+          ]))
+        ]))
+    );
+    expectParsesTo('import "a"',
+        const ArrowAst(const NodeList(const [
+          const ScriptHead(const NodeList(const [
+            const ImportDeclaration($t, $t, uri: '"a"')
+          ]))
+        ]))
+    );
   }
 
   @test
   parts() {
     expectParsesTo('''
-      library x
+      library x.y
       part y
     ''', const ArrowAst(const NodeList<TopLevelNode>(const <TopLevelNode>[
       const ScriptHead(const NodeList(const [
-        const LibraryDeclaration($t, $t, const Identifier('x')),
+        const LibraryDeclaration($t, $t, const QualifiedIdentifier(const [const Identifier('x'), const Identifier('y')])),
         const PartDeclaration($t, $t, const Identifier('y')),
       ]))
     ])));

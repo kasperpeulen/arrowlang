@@ -1,7 +1,7 @@
 part of arrow.ast.ast;
 
 class LibraryDeclaration extends Node {
-  final Identifier name;
+  final QualifiedIdentifier name;
   final Token start;
   final Token end;
 
@@ -15,9 +15,7 @@ class LibraryDeclaration extends Node {
         .expect(TokenType.libraryKeyword)
         .move();
 
-    final id = parser
-        .expect(TokenType.identifier)
-        .move();
+    final id = new QualifiedIdentifier.parse(parser);
 
     final breakToken = parser
         .expectBreak()
@@ -26,7 +24,7 @@ class LibraryDeclaration extends Node {
     return new LibraryDeclaration(
         libraryToken,
         breakToken,
-        new Identifier(id.content)
+        id
     );
   }
 

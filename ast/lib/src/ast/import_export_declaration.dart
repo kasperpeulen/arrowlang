@@ -3,15 +3,17 @@ part of arrow.ast.ast;
 class ImportDeclaration extends Node {
   final Token start;
   final Token end;
-  final Identifier name;
+  final NamespaceQualifiedIdentifier name;
+  final String uri;
   final Identifier as;
   final List<TypeName> show;
   final List<TypeName> hide;
 
   const ImportDeclaration(
       Token importToken,
-      Token breakToken,
-      this.name, {
+      Token breakToken, {
+        this.name,
+        this.uri,
         this.as,
         this.show: const [],
         this.hide: const []
@@ -44,9 +46,8 @@ class ImportDeclaration extends Node {
         .expect(TokenType.importKeyword)
         .move();
 
-    final id = parser
-        .expect(TokenType.identifier)
-        .move();
+    final id = new NamespaceQualifiedIdentifier.parse(parser);
+    final uri = _parseUri(parser);
 
     final Identifier as = () {
       if (parser.next.isnt(TokenType.asKeyword))
@@ -69,7 +70,8 @@ class ImportDeclaration extends Node {
     return new ImportDeclaration(
         importToken,
         breakToken,
-        new Identifier(id.content),
+        name: id,
+        uri: uri,
         as: as,
         show: showHideList.show,
         hide: showHideList.hide
@@ -86,6 +88,7 @@ class ImportDeclaration extends Node {
   bool operator ==(other) {
     return other is ImportDeclaration
         && other.name == name
+        && other.uri == uri
         && other.as == as
         && _equalIterables(other.show, show)
         && _equalIterables(other.hide, hide)
@@ -93,17 +96,24 @@ class ImportDeclaration extends Node {
   }
 }
 
+String _parseUri(Parser parser) {
+  if (parser.next.isnt(TokenType.string)) return null;
+  return parser.expect(TokenType.string).move().content;
+}
+
 class ExportDeclaration extends Node {
   final Token start;
   final Token end;
-  final Identifier name;
+  final NamespaceQualifiedIdentifier name;
+  final String uri;
   final List<TypeName> show;
   final List<TypeName> hide;
 
   const ExportDeclaration(
       Token importToken,
-      Token breakToken,
-      this.name, {
+      Token breakToken, {
+        this.name,
+        this.uri,
         this.show: const [],
         this.hide: const []
       }
@@ -134,9 +144,8 @@ class ExportDeclaration extends Node {
         .expect(TokenType.exportKeyword)
         .move();
 
-    final id = parser
-        .expect(TokenType.identifier)
-        .move();
+    final id = new NamespaceQualifiedIdentifier.parse(parser);
+    final uri = _parseUri(parser);
 
     final showHideList = new _ShowHideList(parser);
 
@@ -147,7 +156,8 @@ class ExportDeclaration extends Node {
     return new ExportDeclaration(
         exportToken,
         breakToken,
-        new Identifier(id.content),
+        name: id,
+        uri: uri,
         show: showHideList.show,
         hide: showHideList.hide
     );
@@ -157,6 +167,15 @@ class ExportDeclaration extends Node {
     final showPart = show.isEmpty ? '' : ' show ${show.map((t) => '$t').join(', ')}';
     final hidePart = hide.isEmpty ? '' : ' hide ${hide.map((t) => '$t').join(', ')}';
     return '$runtimeType: export ${name.name}$showPart$hidePart ($start -> $end)';
+  }
+
+  bool operator ==(other) {
+    return other is ExportDeclaration
+        && other.name == name
+        && other.uri == uri
+        && _equalIterables(other.show, show)
+        && _equalIterables(other.hide, hide)
+        && super == other;
   }
 }
 

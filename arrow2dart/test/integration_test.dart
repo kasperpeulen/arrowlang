@@ -8,7 +8,7 @@ class IntegrationTest extends TestCase {
   tearDown() {}
 
   expectArrow2Dart(String arrow, String dart) {
-    expect(arrow2dart(arrow), dart);
+    expect(arrow2dart(arrow).trim(), dart);
   }
 
   @test
@@ -23,5 +23,9 @@ class IntegrationTest extends TestCase {
     expectArrow2Dart('x(): async* X {}', "Stream<X> x() async* {}");
     expectArrow2Dart('x(): sync Future<X> {}', "Future<X> x() {}");
     expectArrow2Dart('x(): Future<X> {}', "Future<X> x() {}");
+    expectArrow2Dart('import x', "import 'package:x/x.dart';");
+    expectArrow2Dart('import x:y', "import 'package:x/y.dart';");
+    expectArrow2Dart('import dart:html', "import 'dart:html';");
+    expectArrow2Dart("import 'a.dart'", "import 'a.dart';");
   }
 }
