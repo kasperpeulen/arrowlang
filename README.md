@@ -77,11 +77,11 @@ syntax found in other modern languages:
 
 ```arrow
 var myVar: String
-final myFinal: String
+let myFinal: String
 const myConst: String
 
 var myVar
-final myFinal
+let myFinal
 const myConst
 
 myFunc(): String {}
