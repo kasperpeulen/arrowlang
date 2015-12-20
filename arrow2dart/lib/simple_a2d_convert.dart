@@ -26,8 +26,16 @@ String _convertImportExportUri(NamespaceQualifiedIdentifier name, String uri) {
   final namespace = name.namespace?.name;
   final parts = name.identifier.parts.map((i) => i.name);
   if (namespace == 'dart')
-    return "'dart:${parts.first}'";
-  throw new UnimplementedError('TODO: Import/Export declaration with name [${name.name}]');
+    return "'dart:${parts.join('.')}'";
+  if (name.namespace == null) {
+    final path = name.identifier.parts.map((i) => i.name).join('/');
+    return "'$path.dart'";
+  }
+  final package = name.namespace.name;
+  if (name.identifier.parts.isEmpty)
+    return "'package:$package/$package.dart'";
+  final path = name.identifier.parts.map((i) => i.name).join('/');
+  return "'package:$package/$path.dart'";
 }
 
 String _convertArgument(Argument argument) {

@@ -21,6 +21,8 @@ class QualifiedIdentifier implements Identifier {
   String get name => parts.map((i) => i.name).join('.');
 
   factory QualifiedIdentifier.parse(Parser parser) {
+    if (parser.next.isnt(TokenType.identifier))
+      return const QualifiedIdentifier(const []);
     return new QualifiedIdentifier(
         new List.unmodifiable(
             _parseParts(parser)
