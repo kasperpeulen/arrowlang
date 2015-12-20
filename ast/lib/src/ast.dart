@@ -18,6 +18,7 @@ part 'ast/type_name.dart';
 part 'ast/function_declaration.dart';
 part 'ast/argument.dart';
 part 'ast/value_declaration.dart';
+part 'ast/expression.dart';
 
 bool _equalIterables(Iterable iterableA, Iterable iterableB) {
   if (iterableA.length != iterableB.length) return false;

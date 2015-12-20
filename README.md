@@ -99,7 +99,7 @@ Future<String> x() async {}
 Stream<String> x() async* {}
 ```
 
-If the function should not be modified, but still return oneof the types above,
+If the function should not be modified, but still return one of the types above,
 nothing changes other than the modifier part, which is not a part of the signature
 of the function.
 

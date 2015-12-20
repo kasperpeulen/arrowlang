@@ -4,7 +4,7 @@ class Argument extends ValueDeclaration {
   const Argument(
       Identifier name,
       TypeName type
-  ) : super(name, type);
+  ) : super(null, null, name, type: type);
 
   factory Argument.parse(Parser parser) {
     final name = parser

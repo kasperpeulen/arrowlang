@@ -10,6 +10,7 @@ class Tokenizer {
     r'^\/\/.*': TokenType.lineComment,
     r'^\/\*[^]*?\*\/': TokenType.multilineComment,
     r'''^r(['"])(?:\1\1[^]*?\1\1|.*?)\1''': TokenType.rawString,
+    r'^(\d*\.\d+|\d+)': TokenType.number,
 
     // Keywords
     r'^abstract\b': TokenType.abstractKeyword,
@@ -84,6 +85,9 @@ class Tokenizer {
     r'^\<': TokenType.openAngleBracket,
     r'^\>': TokenType.closeAngleBracket,
     r'^\*': TokenType.star,
+    r'^\=': TokenType.equals,
+    r'^\+': TokenType.plus,
+    r'^\-': TokenType.minus,
 
     _identifierMatcher: TokenType.identifier,
   };
@@ -229,7 +233,7 @@ class Tokenizer {
   String _source(int offset) => source.substring(offset);
 
   String _describePoint(int offset) {
-    return '$currentLine:$currentColumn';
+    return '${currentLine(offset)}:${currentColumn(offset)}';
   }
 
   Iterable<String> parsedLines(int offset) => source.substring(0, offset).split(new RegExp(r'\r?\n'));

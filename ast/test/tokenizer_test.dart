@@ -104,6 +104,11 @@ class TokenizerTest implements TestCase {
     expectToken(r'$1_special', TokenType.identifier);
     expectToken(r'_1$special', TokenType.identifier);
 
+    // Numbers
+    expectToken(r'1', TokenType.number);
+    expectToken(r'1.1', TokenType.number);
+    expectToken(r'.1', TokenType.number);
+
     // Comments
     expectToken('//c', TokenType.lineComment);
     expectToken('///c', TokenType.lineComment);
@@ -140,6 +145,9 @@ class TokenizerTest implements TestCase {
     expectToken('<', TokenType.openAngleBracket);
     expectToken('>', TokenType.closeAngleBracket);
     expectToken('*', TokenType.star);
+    expectToken('=', TokenType.equals);
+    expectToken('+', TokenType.plus);
+    expectToken('-', TokenType.minus);
   }
 
   @test

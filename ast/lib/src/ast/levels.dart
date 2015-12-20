@@ -45,4 +45,61 @@ class TopLevelFunction extends FunctionDeclaration implements TopLevelNode {
   }
 }
 
-abstract class BlockLevelNode implements Node {}
+abstract class BlockLevelNode implements Node {
+  /// [BlockLevelNode] ::=
+  ///   [BlockLevelValueDeclaration]
+  factory BlockLevelNode.parse(Parser parser) {
+    if (parser.next.isAnyOf([
+      TokenType.letKeyword,
+      TokenType.varKeyword,
+      TokenType.constKeyword
+    ])) return new BlockLevelValueDeclaration.parse(parser);
+    throw new UnimplementedError('TODO: BlockLevelNode');
+  }
+
+  /// block ::=
+  ///  '{'
+  ///  [BlockLevelNode]*
+  ///  '}'
+  static Iterable<BlockLevelNode> parseMulti(Parser parser) sync* {
+    parser.expect(TokenType.openCurly).move();
+    while (parser.next.isnt(TokenType.closeCurly))
+      yield new BlockLevelNode.parse(parser);
+    parser.expect(TokenType.closeCurly).move();
+  }
+}
+
+class BlockLevelValueDeclaration extends ValueDeclaration implements BlockLevelNode {
+  const BlockLevelValueDeclaration(
+      Token mutabilityKeyword,
+      Token breakToken,
+      Identifier name, {
+        TypeName type: const UndeclaredType(),
+        Expression assignment
+      }
+  ) : super(
+      mutabilityKeyword,
+      breakToken,
+      name,
+      type: type,
+      assignment: assignment
+  );
+
+  factory BlockLevelValueDeclaration.parse(Parser parser) {
+    final valueDeclaration = new ValueDeclaration.parse(parser);
+    return new BlockLevelValueDeclaration(
+        valueDeclaration.start,
+        valueDeclaration.end,
+        valueDeclaration.name,
+        type: valueDeclaration.type,
+        assignment: valueDeclaration.assignment
+    );
+  }
+
+  bool operator ==(other) {
+    return other is BlockLevelValueDeclaration
+        && super == other;
+  }
+}
+
+abstract class ExpressionLevelNode {}

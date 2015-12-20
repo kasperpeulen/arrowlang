@@ -30,4 +30,65 @@ class IntegrationTest extends TestCase {
     expectArrow2Dart('import dart:html', "import 'dart:html';");
     expectArrow2Dart("import 'a.dart'", "import 'a.dart';");
   }
+
+  @test
+  example_script() {
+    expectArrow2Dart(r'''
+library my_library
+
+import other_package:
+import other_package:util
+
+part my_util
+
+main(): async Null {
+  let greeting = 'Hello'
+  let name = 'Friend'
+
+  let message = await new Greeter(greeting).greet(name)
+
+  print(message) // Hello, Friend!
+}
+
+class Greeter {
+  let greeting: String
+
+  Greeter(this.greeting)
+
+  greet(name: String): async String {
+    await something
+
+    return '$greeting, $name!'
+  }
+}
+    ''', r'''
+library my_library;
+
+import 'package:other_package/other_package.dart';
+import 'package:other_package/util.dart';
+
+part 'my_util.dart';
+
+Future main() {
+  final greeting = 'Hello';
+  final name = 'Friend';
+
+  final message = await new Greeter(greeting).greet(name);
+
+  print(message); // Hello, Friend!
+}
+
+class Greeter {
+  final String greeting;
+
+  Greeter(this.greeting);
+
+  Future<String> greet(String name) async {
+    await something;
+
+    return '$greeting, $name!';
+  }
+}
+    ''');
+  }
 }

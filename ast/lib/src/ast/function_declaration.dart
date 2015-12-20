@@ -20,9 +20,7 @@ class FunctionDeclaration extends Node {
   ///   [Identifier]
   ///   argumentList
   ///   (':' [TypeName])?
-  ///   '{'
-  ///   [BlockLevelNode]*
-  ///   '}'
+  ///   block
   ///
   /// argumentList ::=
   ///   '('
@@ -41,8 +39,12 @@ class FunctionDeclaration extends Node {
 
     final type = new TypeName.parseReturnType(parser);
 
-    parser.expect(TokenType.openCurly).move();
-    final end = parser.expect(TokenType.closeCurly).move();
+    final block = new NodeList<BlockLevelNode>(
+        new List<BlockLevelNode>.unmodifiable(
+            BlockLevelNode.parseMulti(parser)
+        )
+    );
+    final end = parser.current;
 
     return new FunctionDeclaration(
       name,
@@ -50,7 +52,7 @@ class FunctionDeclaration extends Node {
       new Identifier(name.content),
       type,
       arguments,
-      const NodeList.empty()
+      block
     );
   }
 

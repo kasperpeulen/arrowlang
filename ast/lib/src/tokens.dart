@@ -11,6 +11,8 @@ enum TokenType {
 
   identifier,
 
+  number,
+
   string,
   rawString,
   openStringInterpolation,
@@ -89,6 +91,9 @@ enum TokenType {
   openAngleBracket,
   closeAngleBracket,
   star,
+  equals,
+  plus,
+  minus,
 }
 
 class Token {

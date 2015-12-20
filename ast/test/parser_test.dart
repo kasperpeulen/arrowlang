@@ -271,6 +271,31 @@ export e show A hide B
         ]))
     );
   }
+
+  @test
+  blocks() {
+    expectParsesTo(
+        'x() {let x = 3}',
+        const ArrowAst(const NodeList<TopLevelNode>(const <TopLevelNode>[
+        const ScriptHead.empty(),
+            const TopLevelFunction(
+                $t, $t,
+                const Identifier('x'),
+                const TypeName(const Identifier('X')),
+                const <Argument>[],
+                const NodeList<BlockLevelNode>(const [
+                  const BlockLevelValueDeclaration(
+                      $t, $t,
+                      const Identifier('x'),
+                      assignment: const Expression(const [
+                          const NumberLiteral(3)
+                      ])
+                  )
+                ])
+            )
+        ]))
+    );
+  }
 }
 
 const $t = const MatchAllToken();
