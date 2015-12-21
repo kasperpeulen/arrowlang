@@ -15,7 +15,7 @@ dev_dependencies:
   testcase: any
 
 executables:
-  - arrow2dart
+  arrow2dart:
 
 dependency_overrides:
   arrow_ast:
